@@ -17,3 +17,12 @@ meta:
 historically, swe discipline produced products that were hard to
 use/maintain/etc., applying appropriate methods aims to alleviate these
 concerns as much as possible.
+
+## administrivia
+
+about prof. Dennis Hood:
+
+background as swe, moved into teaching swe methods, sw quality, user-centered
+design, & more
+
+see syllabus for contact, office hours, etc.
