@@ -1,6 +1,6 @@
 ---
-title: "SWE: administrivia & motivations"
-description: "Week 1 lecture notes, covering administrative details/logistics & motivations for studying software engineering processes."
+title: "SWE: intro & administrivia"
+description: "Day 1 lecture notes, covering administrative details/logistics for studying software engineering processes."
 keywords:
   - "software engineering methods"
   - "lecture notes"
@@ -69,7 +69,8 @@ categories:
 - _**10% midterm**_
 - _**15% final**_
 
-  both midterm & final will be closed book & in person.
+  both midterm & final will be closed book & in person. final will be
+  comprehensive.
 
 scale:
 
@@ -85,9 +86,3 @@ before lecture on Tuesday/Thursday. lecture is intended to be a more of
 
 a time for discussion & less of a time for downloading information from
 slides to memory.
-
-## motivation
-
-> [!TODO]
->
-> we'll pick up here next time...
