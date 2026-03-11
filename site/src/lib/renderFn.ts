@@ -1,4 +1,8 @@
-import { createDirectives } from "marked-directive"
+import {
+  createDirectives,
+  DirectiveConfig,
+  presetDirectiveConfigs,
+} from "marked-directive"
 import hljs from "highlight.js"
 import { Marked, type MarkedExtension } from "marked"
 import markedAlert from "marked-alert"
@@ -9,7 +13,6 @@ export type ExtBuilder = () => MarkedExtension
 
 function makeRenderer(extensions?: ExtBuilder[]): RenderFn {
   const marked = new Marked()
-  // renderer.use(createDirectives())
   if (extensions) {
     marked.use(...extensions.map((e) => e()))
   }
@@ -100,4 +103,194 @@ function gfmAlerter(): MarkedExtension {
   }
 }
 
-export default makeRenderer([codeHighlighter, gfmAlerter, createDirectives])
+type Month =
+  | "Jan."
+  | "Feb."
+  | "March"
+  | "April"
+  | "June"
+  | "July"
+  | "Aug."
+  | "Sep."
+  | "Oct."
+  | "Nov."
+  | "Dec."
+
+type RefItemBase = {
+  id: string
+  leadLastName: string
+  authors: string
+  month?: Month
+  year: string
+  article: string
+  seen: number
+}
+type RefItemJournal = RefItemBase & {
+  type: "journal"
+  journal: string
+  link?: string
+  volNum?: number
+  issueNum?: number
+  issueMonth: Month
+  pageNum?: string
+  articleNum?: number
+}
+type RefItemArXiv = RefItemBase & {
+  type: "arxiv"
+  arxivId: string
+  link: string
+}
+type RefItemOnlineDoc = RefItemBase & {
+  type: "online-doc"
+  website: string
+  retreived: string
+  link: string
+  archive?: string
+}
+type _RefListItem = RefItemJournal | RefItemArXiv | RefItemOnlineDoc
+type RefListItem = _RefListItem & {
+  sortKey: keyof _RefListItem | undefined
+}
+
+const allowed_items = new Set(["journal", "arxiv", "online-doc"])
+
+function parseItem(item: any): [string, RefListItem] | undefined {
+  // TODO: actually parse items for correct information
+  if (allowed_items.has(item.type)) return [item.id, item]
+  else return undefined
+}
+
+function sortRefs(a: RefListItem, b: RefListItem): 0 | -1 | 1 {
+  // sort by specified key, defaulting to last name & using id as a fallback
+  const aKey = a[a.sortKey!] || a.leadLastName || a.id
+  const bKey = b[b.sortKey!] || b.leadLastName || b.id
+
+  if (aKey > bKey) return 1
+  if (aKey < bKey) return -1
+  return 0
+}
+
+function renderRefItem(item: RefListItem): string {
+  const num = `value=${item.seen!}` || ""
+  let body = ""
+
+  switch (item.type) {
+    case "journal":
+      body = item.authors + ". "
+      body += item.year + ". "
+      body += item.article + ". "
+      body += `<em>${item.journal}</em>`
+      if (item.volNum) {
+        body += ` ${item.volNum}`
+      }
+      if (item.issueNum) {
+        if (item.volNum) body += ", "
+        else body += " "
+        body += item.issueNum
+      }
+      if (item.articleNum) {
+        if (item.volNum || item.issueNum) body += ", "
+        else body += " "
+        body += `Article ${item.articleNum}`
+      }
+      body += ` (${item.issueMonth} ${item.year})`
+      if (item.pageNum) {
+        body += ", " + item.pageNum
+      }
+      body += ". "
+      body += `<a href=${item.link}>${item.link}</a>`
+
+      break
+    case "arxiv":
+      body = "arxiv TODO..."
+      break
+    case "online-doc":
+      body = "online document TODO..."
+      break
+  }
+
+  return `<li ${num}>${body}</li>`
+}
+
+function customDirector(): MarkedExtension {
+  let refs: Map<string, RefListItem> = new Map()
+  let nextOrder = 1
+
+  const refItem: DirectiveConfig = {
+    level: "block",
+    marker: "::",
+    renderer(token) {
+      if (token.meta.name == "ref-item") {
+        console.info("parsing reference item")
+        console.dir(token.attrs)
+        const parsed = parseItem(token.attrs)
+
+        if (parsed != undefined) {
+          const [id, item] = parsed
+          refs.set(id, item)
+          console.log(`parsed ${item.type} reference item ${id}`)
+        } else {
+          console.warn(`skipping invalid reference item: ${token.attrs}$`)
+        }
+      }
+
+      return false
+    },
+  }
+
+  const refsList: DirectiveConfig = {
+    level: "block",
+    marker: "::",
+    renderer(token) {
+      if (token.meta.name != "ref-list") {
+        return false
+      }
+
+      console.info("rendering refs list:")
+      console.dir(refs)
+
+      const items = Array.from(refs.values())
+        .sort(sortRefs)
+        .map((item) => renderRefItem(item))
+        .join("\n")
+
+      let html = '<section id="references">\n'
+      html += "<h2>References</h2>\n"
+      html += `<ol class="references-list">\n${items}</ol>\n`
+      html += "</section>"
+
+      return html
+    },
+  }
+
+  const inlineCitation: DirectiveConfig = {
+    level: "inline",
+    marker: ":",
+    renderer(token) {
+      if (token.meta.name == "ref") {
+        const ref = refs.get(token.text)
+        const id = ref?.id
+
+        if (!id) return `[<a href="">CITATION-MISSING: ${token.text}</a>]`
+
+        if (!ref.seen) {
+          ref.seen = nextOrder
+          nextOrder++
+        }
+
+        return `[<a href="#ref-${id}">${ref.seen}</a>]`
+      }
+
+      return false
+    },
+  }
+
+  return createDirectives([
+    ...presetDirectiveConfigs,
+    refItem,
+    refsList,
+    inlineCitation,
+  ])
+}
+
+export default makeRenderer([codeHighlighter, gfmAlerter, customDirector])
