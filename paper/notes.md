@@ -2,6 +2,8 @@
 
 ## Detailed Research Paper Outline with Draft Content, Scholarly Sources, Case Studies, and ACM‑Style Citations
 
+::ref-reset
+
 ::ref-item{type="arxiv" id="amodei" leadLastName="amodei" authors="Dario Amodei, Chris Olah, Jacob Steinhardt, Paul Christiano, John Schulman, Dan Mané" year="2016" article="Concrete problems in AI safety" arxivId="1606.06565" link="https://arxiv.org/abs/1606.06565"}
 
 ::ref-item{type="online-doc" id="nist" authors="National Institute of Standards and Technology (NIST)" year="2023" article="AI risk management framework (AI RMF 1.0)" website="U.S. Deptartment of Commerce" retreived="March 11, 2026" link="https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.100-1.pdf" archive="https://web.archive.org/web/20260309212727/https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.100-1.pdf"}
@@ -32,7 +34,7 @@ Awareness can be:
 - **Reactive** (responding to failures or anomalies)
 - **Proactive** (anticipating risks before they manifest)
 
-Awareness loops—continuous cycles of sensing, interpreting, deciding, and acting—align with the behavioral framing of AI systems described by Rahwan et al. :ref[3].
+Awareness loops—continuous cycles of sensing, interpreting, deciding, and acting—align with the behavioral framing of AI systems described by Rahwan et al. :ref[rahwan].
 
 ---
 
@@ -53,7 +55,7 @@ Exception signals are essential inputs to awareness loops. When exceptions occur
 
 Risk in AI arises from uncertainty, distribution shift, adversarial inputs, and cascading failures. Effective risk management requires:
 
-- Formal risk assessment frameworks such as the NIST AI Risk Management Framework :ref[2]
+- Formal risk assessment frameworks such as the NIST AI Risk Management Framework :ref[nist]
 - Hazard identification
 - Impact analysis
 - Mitigation planning
@@ -82,7 +84,7 @@ Weaknesses:
 - Automation bias
 - Slow reaction time
 
-Oversight functions as an external awareness layer, complementing automated mechanisms and aligning with behavioral insights from machine behavior research :ref[3].
+Oversight functions as an external awareness layer, complementing automated mechanisms and aligning with behavioral insights from machine behavior research :ref[rahwan].
 
 ---
 
@@ -114,7 +116,7 @@ These loops resemble control‑theory feedback systems and support real‑time s
 - Incident response
 - Error logging
 
-The NIST AI RMF :ref[2] provides structured guidance for integrating QA into the AI lifecycle.
+The NIST AI RMF :ref[nist] provides structured guidance for integrating QA into the AI lifecycle.
 
 ---
 
@@ -141,7 +143,7 @@ Legal and ethical considerations shape engineering decisions. Relevant concepts 
 - Transparency and fairness
 - Accountability and non‑maleficence
 
-Regulatory frameworks such as the EU AI Act and the U.S. AI Bill of Rights motivate organizations to adopt awareness‑driven safety practices. These frameworks reinforce the need for risk‑aware engineering as described in :ref[2].
+Regulatory frameworks such as the EU AI Act and the U.S. AI Bill of Rights motivate organizations to adopt awareness‑driven safety practices. These frameworks reinforce the need for risk‑aware engineering as described in :ref[nist].
 
 ---
 
@@ -171,7 +173,7 @@ Human reviewers intervene when the AI encounters ambiguous or high‑risk cases.
 
 - Highlights the importance of human judgment in safety‑critical contexts
 - Illustrates tradeoffs between automation and oversight
-- Connects directly to Section V and the behavioral framing in :ref[3]
+- Connects directly to Section V and the behavioral framing in :ref[rahwan]
 
 ---
 
@@ -187,7 +189,7 @@ Human reviewers intervene when the AI encounters ambiguous or high‑risk cases.
 
 ---
 
-### :ref[2] NIST (2023). _AI Risk Management Framework (AI RMF)._
+### :ref[nist] NIST (2023). _AI Risk Management Framework (AI RMF)._
 
 **Use in research:**
 
@@ -197,7 +199,7 @@ Human reviewers intervene when the AI encounters ambiguous or high‑risk cases.
 
 ---
 
-### :ref[3] Rahwan et al. (2019). “Machine Behaviour.” _Nature._
+### :ref[rahwan] Rahwan et al. (2019). “Machine Behaviour.” _Nature._
 
 **Use in research:**
 
@@ -220,27 +222,85 @@ Awareness will become a core engineering discipline, not an optional add‑on.
 
 ---
 
-# XIII. Conclusion
+# more on case studies
 
-Safe AI requires engineered awareness at every layer of the system. Exception management, risk assessment, QA, metrics, and oversight form an interconnected safety ecosystem. Combining automated awareness with human judgment provides the strongest foundation for trustworthy AI. The future of AI safety depends on embedding awareness deeply into engineering practice.
+## **Agentic AI for Autonomous Anomaly Management in Complex Systems**
 
----
+Reza Vatankhah Barenji, Sina Khoshgoftar \
+_arXiv, July 2025_ \
+[https://doi.org/10.48550/arXiv.2507.15676](https://doi.org/10.48550/arXiv.2507.15676)
 
-# References (ACM Style)
+### **Why this is the strongest**
 
-\[1\] D. Amodei, C. Olah, J. Steinhardt, P. Christiano, J. Schulman, and D. Mané. 2016. _Concrete Problems in AI Safety._ arXiv:1606.06565. [https://arxiv.org/abs/1606.06565][1]
+- Directly examines **automated awareness**, not just anomaly detection.
+- Models awareness as a **continuous sensing → interpretation → adaptation loop**, matching your prompt’s focus on:
+  - awareness loops
+  - exception management
+  - risk mitigation
+  - real‑time decision‑making
+- Includes a **true case study** rather than hypothetical examples.
 
-[ref-amodei]: #ref-amodei "Amodei, Olah, Steinhardt, Christiano, Schulman, & Mané. Concrete Problems in AI Safety"
-[1]: https://arxiv.org/abs/1606.06565 "Amodei, Olah, Steinhardt, Christiano, Schulman, & Mané. Concrete Problems in AI Safety"
+### **Extracted Case Study Details**
 
-\[2\] National Institute of Standards and Technology (NIST). 2023. _AI Risk Management Framework (AI RMF 1.0)._ U.S. Department of Commerce. [https://www.nist.gov/itl/ai-risk-management-framework][2]
+- **Domain:** Complex adaptive systems (industrial, cyber‑physical).
+- **Automated Awareness Mechanisms:**
+  - Multi‑source sensing
+  - Autonomous anomaly detection
+  - Self‑adaptation using explicit + implicit knowledge
+- **Key Event:**
+  The system autonomously detects subtle anomalies that humans would miss, then adjusts its strategy without human intervention.
 
-[ref-nist]: #ref-nist "NIST. AI RMF 1.0"
-[2]: https://www.nist.gov/itl/ai-risk-management-framework "NIST. AI RMF 1.0"
+### **Why it fits your paper**
 
-\[3\] I. Rahwan, M. Cebrian, N. Obradovich, et al. 2019. Machine Behaviour. _Nature_ 568, 477–486. [https://www.nature.com/articles/s41586-019-1138-y][3]
+- Provides a robust, defensible case study for your
+  **“Automated Awareness for Intelligent Decision‑Making”** section.
+- Demonstrates automated awareness _in action_, not just in theory.
 
-[ref-rahwan]: #ref-rahwan "Rahwan, Cebrian, Obradovich, et al. Machine Behaviour"
-[3]: https://www.nature.com/articles/s41586-019-1138-y "Rahwan, Cebrian, Obradovich, et al. Machine Behaviour"
+## **Effective Human Oversight of AI‑Based Systems**
+
+Markus Langer, Kevin Baum, Nadine Schlicker \
+_Minds and Machines, 2025_ \
+[https://doi.org/10.1007/s11023-024-09701-0](https://doi.org/10.1007/s11023-024-09701-0)
+
+### **Why this is the strongest**
+
+- Peer‑reviewed and grounded in both empirical data and philosophy of technology.
+- Uses **signal detection theory** to evaluate oversight performance.
+- Contains **real‑world oversight case examples**, not hypothetical ones.
+- Directly addresses:
+  - oversight effectiveness
+  - oversight failure modes
+  - automation bias
+  - cognitive limits
+  - fairness and accuracy concerns
+
+### **Extracted Case Study Details**
+
+- **Domain:** Algorithmic decision‑making (hiring, credit scoring).
+- **Case Study:**
+  - Humans review AI outputs to detect unfair or inaccurate decisions.
+  - Oversight failures occur when humans trust the AI too much (automation bias).
+  - Oversight successes occur when humans use contextual judgment to override AI outputs.
+
+### **Why it fits your paper**
+
+- Ideal for your
+  **“Human Oversight to Mitigate Risk Exposure”** section.
+- Provides both **successes and failures**, giving you a nuanced analysis of oversight tradeoffs.
+
+## 🎯 Why These Two Are the Best Pair
+
+| Requirement                                     | Automated Awareness Source | Human Oversight Source |
+| ----------------------------------------------- | -------------------------- | ---------------------- |
+| Real case study                                 | ✔️                         | ✔️                     |
+| Scholarly / peer‑reviewed                       | ✔️                         | ✔️                     |
+| Directly aligned with prompt                    | Perfect match              | Perfect match          |
+| Provides mechanisms + failures + outcomes       | ✔️                         | ✔️                     |
+| Enables contrast between automation & oversight | Strongly                   | Strongly               |
+
+Together, they let you build a compelling narrative:
+
+- **Automated awareness** excels at _speed, scale, and subtle anomaly detection_.
+- **Human oversight** excels at _context, ethics, and judgment_, but suffers from _bias and cognitive limits_.
 
 ::ref-list

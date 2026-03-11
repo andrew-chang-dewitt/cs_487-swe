@@ -173,12 +173,12 @@ function sortRefs(a: RefListItem, b: RefListItem): 0 | -1 | 1 {
 function renderRefItem(item: RefListItem): string {
   const num = `value=${item.seen!}` || ""
   let body = ""
+  body = item.authors + ". "
+  body += item.year + ". "
+  body += item.article + ". "
 
   switch (item.type) {
     case "journal":
-      body = item.authors + ". "
-      body += item.year + ". "
-      body += item.article + ". "
       body += `<em>${item.journal}</em>`
       if (item.volNum) {
         body += ` ${item.volNum}`
@@ -202,33 +202,52 @@ function renderRefItem(item: RefListItem): string {
 
       break
     case "arxiv":
-      body = "arxiv TODO..."
+      body += item.arxivId + ". "
+      body += `<a href=${item.link}>${item.link}</a>`
+
       break
     case "online-doc":
-      body = "online document TODO..."
+      body += item.website + ". "
+      body += `Retrieved ${item.retreived} from `
+      body += `<a href=${item.link}>${item.link}</a>`
+      if (!!item.archive) {
+        body += `<em>, archived at </em><a href=${item.archive}>${item.archive}</a>`
+      }
+      body += "."
+
       break
   }
 
-  return `<li ${num}>${body}</li>`
+  return `<li id="ref-${item.id}" ${num}>${body}</li>`
 }
 
 function customDirector(): MarkedExtension {
   let refs: Map<string, RefListItem> = new Map()
   let nextOrder = 1
 
+  const refListCounterReset: DirectiveConfig = {
+    level: "block",
+    marker: "::",
+    renderer(token) {
+      if (token.meta.name == "ref-reset") nextOrder = 1
+
+      return false
+    },
+  }
+
   const refItem: DirectiveConfig = {
     level: "block",
     marker: "::",
     renderer(token) {
       if (token.meta.name == "ref-item") {
-        console.info("parsing reference item")
-        console.dir(token.attrs)
+        // console.info("parsing reference item")
+        // console.dir(token.attrs)
         const parsed = parseItem(token.attrs)
 
         if (parsed != undefined) {
           const [id, item] = parsed
           refs.set(id, item)
-          console.log(`parsed ${item.type} reference item ${id}`)
+          // console.log(`parsed ${item.type} reference item ${id}`)
         } else {
           console.warn(`skipping invalid reference item: ${token.attrs}$`)
         }
@@ -246,8 +265,8 @@ function customDirector(): MarkedExtension {
         return false
       }
 
-      console.info("rendering refs list:")
-      console.dir(refs)
+      // console.info("rendering refs list:")
+      // console.dir(refs)
 
       const items = Array.from(refs.values())
         .sort(sortRefs)
@@ -274,9 +293,11 @@ function customDirector(): MarkedExtension {
         if (!id) return `[<a href="">CITATION-MISSING: ${token.text}</a>]`
 
         if (!ref.seen) {
+          console.info(`ref ${ref.id} not seen previously`)
           ref.seen = nextOrder
           nextOrder++
         }
+        console.info(`ref ${ref.id} [${ref.seen}] cited`)
 
         return `[<a href="#ref-${id}">${ref.seen}</a>]`
       }
@@ -287,6 +308,7 @@ function customDirector(): MarkedExtension {
 
   return createDirectives([
     ...presetDirectiveConfigs,
+    refListCounterReset,
     refItem,
     refsList,
     inlineCitation,
