@@ -122,7 +122,7 @@ type RefItemBase = {
   authors: string
   month?: Month
   year: string
-  article: string
+  title: string
   seen: number
 }
 type RefItemJournal = RefItemBase & {
@@ -131,7 +131,6 @@ type RefItemJournal = RefItemBase & {
   link?: string
   volNum?: number
   issueNum?: number
-  issueMonth: Month
   pageNum?: string
   articleNum?: number
 }
@@ -147,12 +146,39 @@ type RefItemOnlineDoc = RefItemBase & {
   link: string
   archive?: string
 }
-type _RefListItem = RefItemJournal | RefItemArXiv | RefItemOnlineDoc
+type RefItemConfProceedings = RefItemBase & {
+  type: "proceedings"
+  conference: string
+  day: string
+  location: string
+  publisher: string
+  pageNum: string
+  link?: string
+}
+type RefItemBook = RefItemBase & {
+  type: "book"
+  chapter?: string
+  publisher: string
+  pageNum: string
+  link?: string
+}
+type _RefListItem =
+  | RefItemJournal
+  | RefItemArXiv
+  | RefItemOnlineDoc
+  | RefItemConfProceedings
+  | RefItemBook
 type RefListItem = _RefListItem & {
   sortKey: keyof _RefListItem | undefined
 }
 
-const allowed_items = new Set(["journal", "arxiv", "online-doc"])
+const allowed_items = new Set([
+  "journal",
+  "arxiv",
+  "online-doc",
+  "proceedings",
+  "book",
+])
 
 function parseItem(item: any): [string, RefListItem] | undefined {
   // TODO: actually parse items for correct information
@@ -175,7 +201,7 @@ function renderRefItem(item: RefListItem): string {
   let body = ""
   body = item.authors + ". "
   body += item.year + ". "
-  body += item.article + ". "
+  body += item.title + ". "
 
   switch (item.type) {
     case "journal":
@@ -193,32 +219,67 @@ function renderRefItem(item: RefListItem): string {
         else body += " "
         body += `Article ${item.articleNum}`
       }
-      body += ` (${item.issueMonth} ${item.year})`
+      body += ` (${item.month} ${item.year})`
       if (item.pageNum) {
         body += ", " + item.pageNum
       }
       body += ". "
-      body += `<a href=${item.link}>${item.link}</a>`
+      if (item.link) body += renderLink(item.link)
 
       break
     case "arxiv":
-      body += item.arxivId + ". "
-      body += `<a href=${item.link}>${item.link}</a>`
+      body += `arXiv:${item.arxivId}. `
+      body += `Retrieved from ${renderLink(item.link)}`
 
       break
     case "online-doc":
       body += item.website + ". "
       body += `Retrieved ${item.retreived} from `
-      body += `<a href=${item.link}>${item.link}</a>`
+      body += renderLink(item.link)
       if (!!item.archive) {
-        body += `<em>, archived at </em><a href=${item.archive}>${item.archive}</a>`
+        body += `<em>, archived at </em>${item.archive}`
       }
       body += "."
+
+      break
+    case "proceedings":
+      body += `In <em>${item.conference}</em>, `
+      body += `${item.month} ${item.day}, ${item.year}, `
+      body += item.location + ". "
+      body += item.publisher + ", "
+      body += item.pageNum + "."
+      if (item.link) body += " " + renderLink(item.link)
+
+      break
+    case "book":
+      if (!!item.chapter) body += `${item.chapter}. <em>In ${item.title}</em>. `
+      else body += `<em>${item.title}</em>. `
+      body += item.publisher + ", "
+      body += item.pageNum + "."
+      if (item.link) body += " " + renderLink(item.link)
 
       break
   }
 
   return `<li id="ref-${item.id}" ${num}>${body}</li>`
+}
+
+function renderLink(
+  href: string,
+  opts?: { text?: string; title?: string },
+): string {
+  let body = opts?.text || href
+  let attrs = `href="${href}"`
+
+  if (opts?.title) {
+    attrs += ` title="${opts?.title}"`
+  }
+
+  if (!/^(#|\|\.)/.test(href)) {
+    attrs += ' rel="external" target="_blank"'
+  }
+
+  return `<a ${attrs}>${body}</a>`
 }
 
 function customDirector(): MarkedExtension {
@@ -270,6 +331,14 @@ function customDirector(): MarkedExtension {
 
       const items = Array.from(refs.values())
         .sort(sortRefs)
+        .filter((item) => {
+          if (!item.seen) {
+            console.warn(`Reference not used: ${item.id}`)
+            return false
+          }
+
+          return true
+        })
         .map((item) => renderRefItem(item))
         .join("\n")
 
@@ -287,19 +356,38 @@ function customDirector(): MarkedExtension {
     marker: ":",
     renderer(token) {
       if (token.meta.name == "ref") {
-        const ref = refs.get(token.text)
-        const id = ref?.id
+        const links = token.text
+          .split(/, */)
+          .reduce((list: string[], tok: string): string[] => {
+            const ref = refs.get(tok)
+            const id = ref?.id
 
-        if (!id) return `[<a href="">CITATION-MISSING: ${token.text}</a>]`
+            if (!id) {
+              console.error(`CITATION MISSING: ${tok}`)
+              return [
+                ...list,
+                renderLink("#", { text: `CITATION-MISSING: ${tok}` }),
+              ]
+            }
 
-        if (!ref.seen) {
-          console.info(`ref ${ref.id} not seen previously`)
-          ref.seen = nextOrder
-          nextOrder++
-        }
-        console.info(`ref ${ref.id} [${ref.seen}] cited`)
+            if (!ref.seen) {
+              console.info(`ref ${ref.id} not seen previously`)
+              ref.seen = nextOrder
+              nextOrder++
+            }
+            console.info(`ref ${ref.id} [${ref.seen}] cited`)
 
-        return `[<a href="#ref-${id}">${ref.seen}</a>]`
+            return [
+              ...list,
+              renderLink(`#ref-${id}`, {
+                text: `${ref.seen}`,
+                title: `${ref.authors}. ${ref.year}. ${ref.title}`,
+              }),
+            ]
+          }, [])
+          .join(", ")
+
+        return `[${links}]`
       }
 
       return false
