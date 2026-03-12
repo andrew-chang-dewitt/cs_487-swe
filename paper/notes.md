@@ -877,78 +877,83 @@ The chapter argues that ethical AI requires both governance frameworks and ethic
 #### Why this is an awareness failure:
 
 The model had no internal mechanism to detect:
+
 - Biased correlations
 - Harmful patterns
 - Discriminatory outcomes
 
 It lacked fairness awareness, contextual awareness, and harm detection.
 
+#### Twist: this one is _also_ a human oversight failure:
+
+- The hiring model discriminated against women for years.
+- Human reviewers did not detect the bias.
+- The system’s outputs appeared “reasonable,” masking underlying discrimination.
+
+this happened because
+
+- Humans tend to overtrust algorithmic outputs.
+- Bias is often invisible without specialized tools.
+- Human reviewers lacked the expertise to detect proxy variables.
+
 #### Why it matters:
 
 This is a canonical example of automated systems failing to detect their own harmful behavior, requiring human audits to uncover the issue.
 
-### Source :ref[phan]: Neural control failues in unsafe regions
-
-**Failure: Neural network controllers cannot detect when they are about to take unsafe actions.**
+### Source :ref[ramachandran]: Uber Self‑Driving Car Crash
 
 #### What happened:
 
-- In rover navigation, inverted pendulum, and artificial pancreas tasks, the neural controller (NC) repeatedly proposed catastrophic actions.
-- The NC had no internal awareness of safety boundaries.
-- Only the safety controller (BC) could detect unsafe states.
+- A self‑driving Uber test vehicle struck and killed a pedestrian in Tempe, Arizona.
+- The vehicle’s perception system misclassified the pedestrian multiple times.
+- The system’s emergency braking was disabled during autonomous mode.
+- A human “safety driver” was supposed to intervene, but she was distracted.
+- No one, human or machine, recognized the danger in time.
 
-#### Why this is an awareness failure:
+#### Where Automated Awareness Failed
 
-Neural controllers lack:
-- State‑space awareness
-- Safety‑margin awareness
-- Self‑monitoring
-- Uncertainty estimation
+The vehicle’s perception system repeatedly changed its classification of the pedestrian:
+- “Unknown object” → “Vehicle” → “Bicycle”
+- It never stabilized on a correct classification.
+- It never predicted a collision with enough confidence to trigger action.
 
-NSA was invented because automated awareness fails in high‑risk control tasks.
+The system also lacked:
+- Uncertainty awareness
+- Hazard awareness
+- Fail‑safe escalation
+- Redundant safety checks
 
-#### Why it matters:
+In other words, the AI had no internal mechanism to recognize that it was confused.
+This is a textbook case of automated awareness failure.
 
-This is the clearest technical demonstration that automated awareness cannot guarantee safety in continuous control systems.
+#### Why Human Oversight Was Required, But Failed
 
-### Source :ref[langer]: Automated Fairness Detection Failure
+Uber’s design assumed:
 
-**Failure: Automated systems cannot detect unfairness because fairness is normative, not statistical.**
+“If the AI fails, the human will catch it.”
 
-#### What happened:
+But the human was placed in an impossible role:
+- She had to monitor a system that usually worked.
+- She had no real‑time feedback about the AI’s uncertainty.
+- She was supervising a task that required millisecond‑level reaction time.
+- She was expected to intervene only in rare emergencies.
 
-- The authors show that detecting unfair outputs requires human judgment, not automated metrics.
-- Automated systems cannot determine whether an output is “unfair” without a human‑defined standard.
-- Even with metrics, systems cannot detect contextual or ethical violations.
+Humans are not cognitively equipped for this kind of vigilance.
+This is exactly what Langer, Baum & Schlicker describe:
+humans supervising automation experience vigilance decay, overtrust, and slow reaction times.
 
-#### Why this is an awareness failure:
+#### Why Human Oversight Is Indispensable — Yet Insufficient
 
-Automated awareness fails because:
-- Fairness cannot be inferred from data alone.
-- Systems lack normative awareness.
-- Systems cannot detect harms that depend on human values.
+The crash shows a paradox: Humans are needed because AI lacks awareness.
+But, humans cannot provide reliable oversight in high‑automation environments.
 
-#### Why it matters:
+The Uber case demonstrates:
+- Humans cannot maintain attention during long periods of low engagement.
+- Humans react too slowly to sudden hazards.
+- Humans are not given enough visibility into the AI’s internal state.
+- Humans are used as “safety nets” rather than active decision‑makers.
 
-This is a conceptual but powerful case study showing the limits of automated ethical awareness.
-
-### Source :ref[ramachandran]: Human Oversight Failure in the Uber Self‑Driving Car Crash
-
-#### What happened:
-
-- The safety driver was supposed to monitor the autonomous vehicle.
-- She was distracted, looking at her phone.
-- The system misclassified the pedestrian, and the human failed to intervene.
-
-#### Oversight limitations exposed:
-
-- Humans cannot maintain constant vigilance during monotonous monitoring tasks.
-- Oversight degrades when humans supervise highly automated systems (“automation complacency”).
-- Humans are too slow to react in high‑speed control loops.
-
-#### Why this case is powerful:
-
-It shows that human oversight is psychologically incompatible with real‑time autonomous systems.
+This is why modern safety research pushes toward hybrid oversight systems rather than “human in the loop” alone.
 
 ### Source :ref[langer]: Human Inability to Reliably Detect AI Errors (Signal Detection Theory)
 
@@ -971,76 +976,5 @@ It shows that human oversight is psychologically incompatible with real‑time a
 #### Why this case is powerful:
 
 It provides a formal, quantitative demonstration that humans are not reliable detectors of AI failures.
-
----
-
-## outline
-
-:::{.outline}
-
-1. Introduction
-   1. Growing reliance on AI in high‑stakes domains (healthcare, hiring, transportation).
-   2. Automated awareness mechanisms (monitoring, anomaly detection, drift detection) are powerful but limited.
-   3. AI systems frequently produce inaccurate or unfair outputs that require human oversight :ref[langer].
-   4. Thesis statement:
-
-      > Human oversight remains indispensable for safe AI because awareness mechanisms alone cannot reliably detect unfairness, contextual errors, or ethically significant harms, making human judgment a necessary complement to automated monitoring.
-
-2. Background: Awareness Mechanisms in Modern AI
-   1. Definition of engineered awareness: continuous monitoring, anomaly detection, drift detection, & automated alerts.
-   2. Strengths: speed, scale, consistency.
-   3. Limitations:
-      1. Cannot reliably detect unfairness or ethical harms :ref[langer].
-      2. Cannot interpret contextual nuance or value‑laden situations :ref[hwang].
-      3. Cannot be held responsible for outcomes w/ moral implications/criminal impact :ref[hwang].
-   4. Why these limitations matter for safety & governance.
-
-3. The Role of Human Oversight
-   1. Forms of oversight: human‑in‑the‑loop, on‑the‑loop, post‑hoc review.
-   2. Unique human capabilities: contextual reasoning, ethical judgment, detection of subtle harms :ref[hwang].
-   3. Oversight is mandated in major governance frameworks (e.g., EU AI Act).
-   4. Oversight is expected to reliably reduce risks associated with AI systems :ref[langer].
-
-4. Where Automated Awareness Fails
-   1. Types of failures automated systems struggle to detect:
-      1. Unfair outputs (e.g., discriminatory decisions) :ref[langer].
-      2. Contextual errors requiring domain knowledge :ref[hwang].
-      3. Ethically significant harms that require human value judgments :ref[hwang].
-   2. Why these failures require human interpretation.
-   3. Real‑world examples referenced in oversight literature (e.g., misclassifications, rights violations).
-
-5. Why Human Oversight Is Indispensable
-   1. Oversight as a safeguard against algorithmic blind spots :ref[langer].
-   2. Oversight as a mechanism for accountability & legitimacy :ref[hwang].
-   3. Oversight is necessary because automated systems cannot reliably detect unfairness or contextual errors :ref[langer].
-   4. Human judgment complements automated monitoring in ethically charged contexts.
-
-6. Challenges & Limitations of Human Oversight
-   1. Cognitive constraints & error‑detection limits (signal detection perspective) :ref[langer].
-   2. Automation bias & over‑trust in AI outputs :ref[langer].
-   3. Difficulty interpreting system behavior in real time :ref[hwang].
-   4. Feasibility issues in high‑speed or high‑complexity systems (e.g., autonomous vehicles) :ref[hwang].
-   5. These limitations do not negate the need for oversight but highlight the need for better design.
-
-7. Designing Effective Hybrid Oversight Systems
-   1. Principles for integrating human judgment with automated awareness.
-   2. Metrics & monitoring to support oversight (real‑time correctness assurance) :ref[gubkin, phan].
-   3. Exception management workflows & escalation pathways :ref[phan].
-   4. Training, calibration, & interface design to improve oversight quality.
-   5. Balancing simple checklists with context‑sensitive empirical testing.
-
-8. Implications for AI Safety, Governance, & Ethics
-   1. Oversight as a requirement in high‑risk AI systems (e.g., EU AI Act).
-   2. Organizational responsibility & liability :ref[hwang].
-   3. Ethical obligations in deploying AI systems that affect rights & well‑being :ref[hwang].
-   4. The future of hybrid human‑AI decision systems.
-
-9. Conclusion
-   1. Restate the thesis.
-   2. Summarize why human oversight remains essential.
-   3. Emphasize the need for hybrid systems combining automated awareness with human judgment.
-   4. Close with a reflection on building safe, trustworthy AI
-
-:::
 
 ::ref-list
