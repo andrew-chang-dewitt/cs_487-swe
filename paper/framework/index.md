@@ -1,9 +1,21 @@
+---
+title: Engineering Awareness to Achieve Safe AI
+meta:
+  skipRenderTitle: true
+  byline: Andrew Chang-DeWitt
+  published: 2026-05-02T20:00-06:00
+---
+
+:::hgroup{.titlegroup}
+
 # Engineering Awareness to Achieve Safe AI
 
 Andrew Chang-DeWitt \
 CS 487 - Software Engineering \
 Illinois Institute of Technology \
 Spring 2026
+
+:::
 
 ::ref-reset
 
