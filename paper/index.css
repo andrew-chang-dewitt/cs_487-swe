@@ -91,7 +91,9 @@ hgroup.titlegroup p {
   :root {
     --fonts-size-titlepage: 32pt;
   }
-  p {
+  p,
+  ol,
+  ul {
     max-width: unset !important;
   }
   #titlepage {
